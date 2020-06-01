@@ -1,0 +1,5 @@
+server:
+  port: 8080 # 配置端口
+  servlet:
+    context-path: /SpringBoot   # 配置web应用的名称
+

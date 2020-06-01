@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.com.hengshui.dao.UserDao">
+
+    <!--抽取重复的sql语句-->
+    <sql id="defaultUser">
+        select * from user
+    </sql>
+
+    <!--查询所有-->
+    <select id="findAll" resultType="com.com.hengshui.domain.User">
+        <include refid="defaultUser"></include>
+    </select>
+
+    <!--保存用户-->
+    <insert id="saveUser1" parameterType="user">
+        insert into user(username,address,sex,birthday)values(#{username},#{address},#{sex},#{birthday})
+    </insert>
+
+    <!--保存用户并得到ID-->
+    <insert id="saveUser2" parameterType="user">
+        <selectKey keyProperty="id" order="AFTER" resultType="Integer">
+            select last_insert_id()
+        </selectKey>
+        insert into user(username,address,sex,birthday)values(#{username},#{address},#{sex},#{birthday})
+    </insert>
+
+    <!--更新用户-->
+    <update id="updateUser" parameterType="user">
+        update user set username = #{username},address = #{address},sex = #{sex},birthday = #{birthday} where id = #{id}
+    </update>
+
+    <!--删除用户-->
+    <!--<delete id="deleteUser" parameterType="Integer">
+        delete from user where id = #{id}
+    </delete>-->
+
+    <!--根据id查询一个-->
+    <select id="findOne" parameterType="Integer" resultType="user">
+        select * from user where id = #{id}
+    </select>
+
+    <!--模糊查询方式1-->
+    <select id="findByName1" parameterType="String" resultType="user">
+        select * from user where username like #{username}
+    </select>
+
+    <!--模糊查询方式2-->
+    <select id="findByName2" parameterType="String" resultType="user">
+        select * from user where username like '%${value}%'
+    </select>
+
+    <!--根据传入的条件，实体类进行查询-->
+   <select id="findUserByQueryVo" resultType="com.com.hengshui.domain.User" parameterType="com.com.hengshui.domain.pojo.QueryVo">
+        select * from user where username like #{user.username}
+    </select>
+
+    <!--超级模糊查询1-->
+    <select id="findUserByCondition1" parameterType="user" resultType="user">
+        select * from user where 1 = 1
+        <if test="username != null">
+            and username = #{username}
+        </if>
+        <if test="address != null">
+            and address = #{address}
+        </if>
+    </select>
+
+    <!--超级模糊查询2-->
+    <select id="findUserByCondition2" parameterType="user" resultType="user">
+        select * from user
+        <where>
+            <if test="username != null">
+                and username = #{username}
+            </if>
+            <if test="address != null">
+                and address = #{address}
+            </if>
+        </where>
+    </select>
+
+    <!--根据QueryVo中提供的ID集合查询-->
+    <select id="findUserInIds" parameterType="QueryVo" resultType="user">
+        select * from user
+        <where>
+            <if test="ids != null and ids.size() > 0">
+                <foreach collection="ids" open="and id in (" close=")" item="id" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <!--根据姓名查询身份证号（1对一）-->
+    <resultMap id="userIdentityCard" type="user">
+        <id property="id" column="id"></id>
+        <result property="username" column="username"></result>
+        <result property="birthday" column="birthday"></result>
+        <result property="sex" column="sex"></result>
+        <result property="address" column="address"></result>
+        <association property="identityCard" column="id" javaType="identityCard" >
+            <id property="id" column="id"></id>
+            <result property="uid" column="uid"></result>
+            <result property="userIdentityCard" column="user_identityCard"></result>
+            <result property="address" column="address"></result>
+        </association>
+    </resultMap>
+    <select id="findNameAll" resultMap="userIdentityCard" parameterType="String">
+        select user.username,user.sex,user.birthday,user.address,identityCard.user_identityCard,user.address from user,identityCard where user.id = identityCard.uid and user.username = #{username}
+    </select>
+
+    <!--查询所有用户并查询用户所拥有的账户-->
+    <resultMap id="userAccount" type="user">
+        <id property="id" column="id"></id>
+        <result property="username" column="username"></result>
+        <result property="birthday" column="birthday"></result>
+        <result property="sex" column="sex"></result>
+        <result property="address" column="address"></result>
+        <collection property="accounts" ofType="account">
+            <id property="id" column="id"></id>
+            <result property="uid" column="uid"></result>
+            <result property="money" column="money"></result>
+            <result property="cardNumber" column="card_number"></result>
+        </collection>
+    </resultMap>
+    <select id="findUserAccount" resultMap="userAccount">
+        select user.username,user.birthday,user.sex,user.address,account.money,account.card_number from user left outer join account on user.id = account.uid
+    </select>
+
+   <!-- 查询所有用户并得到用户所有的角色(多对多)-->
+   <resultMap id="userRoleMap" type="user">
+        <id property="id" column="id"></id>
+        <result property="username" column="username"></result>
+        <result property="birthday" column="birthday"></result>
+        <result property="sex" column="sex"></result>
+        <result property="address" column="address"></result>
+        <collection property="roles" ofType="role">
+            <id property="roleId" column="id"></id>
+            <result property="roleName" column="role_name"></result>
+            <result property="roleDesc" column="role_desc"></result>
+        </collection>
+    </resultMap>
+    <select id="findUserAndRole" resultMap="userRoleMap">
+        select user.username,user.birthday,user.sex,user.address,role.role_name,role.role_desc from user left outer join user_role on user.id = user_role.uid left outer join role on user_role.rid = role.id
+    </select>
+
+    <!--查询所有用户和用户的账户,账户为延迟加载-->
+    <resultMap id="userDelayAccount" type="user">
+        <id property="id" column="id"></id>
+        <result property="username" column="username"></result>
+        <result property="birthday" column="birthday"></result>
+        <result property="sex" column="sex"></result>
+        <result property="address" column="address"></result>
+        <collection property="accounts" column="id" ofType="account" select="com.com.hengshui.dao.AccountDao.findById"></collection>
+    </resultMap>
+
+    <select id="findUserDelayAccount" resultMap="userDelayAccount">
+        select * from user
+    </select>
+
+    <!--查询所有用户和用户的身份证号,身份证号延迟加载-->
+    <resultMap id="userDelayIdentityCard" type="user">
+        <id property="id" column="id"></id>
+        <result property="username" column="username"></result>
+        <result property="birthday" column="birthday"></result>
+        <result property="sex" column="sex"></result>
+        <result property="address" column="address"></result>
+        <collection property="identityCard" column="id" select="com.com.hengshui.dao.IdentityCardDao.findByUserId"></collection>
+    </resultMap>
+
+    <select id="findUserDelayIdentityCard" resultMap="userDelayIdentityCard">
+        select * from user
+    </select>
+
+</mapper>

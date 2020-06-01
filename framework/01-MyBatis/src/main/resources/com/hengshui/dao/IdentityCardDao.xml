@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.com.hengshui.dao.IdentityCardDao">
+
+    <!--查询所有-->
+    <select id="findAll" resultType="com.com.hengshui.domain.IdentityCard">
+        select * from identityCard
+    </select>
+
+    <!--根据身份证号码查询用户信息-->
+    <resultMap id="identityCardUser" type="identityCard">
+        <id property="id" column="id"></id>
+        <result property="uid" column="uid"></result>
+        <result property="userIdentityCard" column="user_identityCard"></result>
+        <result property="address" column="address"></result>
+        <association property="user" column="uid" javaType="user">
+            <id property="id" column="id"></id>
+            <result property="username" column="username"></result>
+            <result property="birthday" column="birthday"></result>
+            <result property="sex" column="sex"></result>
+            <result property="address" column="address"></result>
+        </association>
+    </resultMap>
+    <select id="findByIdentityCard" resultMap="identityCardUser" parameterType="String">
+        select user.username,user.sex,user.birthday,user.address,identityCard.user_identityCard,user.address from user,identityCard where user.id = identityCard.uid and identityCard.user_identityCard = #{user_identityCard}
+    </select>
+
+    <!--根据userId查询身份证号-->
+    <select id="findByUserId" resultType="identityCard" parameterType="Integer">
+        select * from identityCard where uid = #{uid}
+    </select>
+</mapper>

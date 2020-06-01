@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="05-SpringSecurity:war">
+    <output-path>$PROJECT_DIR$/05-SpringSecurity/target</output-path>
+    <root id="archive" name="05-SpringSecurity-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="05-SpringSecurity:war exploded" />
+    </root>
+  </artifact>
+</component>

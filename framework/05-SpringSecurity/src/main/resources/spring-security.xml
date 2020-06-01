@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/security
+          http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<!-- 登陆页,失败页,不会权限控制 -->
+	<security:http security="none" pattern="/login.html" />
+	<security:http security="none" pattern="/failure.html" />
+
+	<!--所有路径都需要ROLE_USER角色才能访问,默认登陆页,登陆的url,登陆的账号参数,密码参数,失败后页面,默认的成功页,认证成功登陆的页面,开启跨服务器的请求访问-->
+	<security:http auto-config="true" use-expressions="false" >
+		<security:intercept-url pattern="/**" access="ROLE_USER" />
+		<security:form-login login-page="/login.html" login-processing-url="/login" username-parameter="username" password-parameter="password" authentication-failure-url="/failure.html" default-target-url="/success.html" authentication-success-forward-url="/success.html"/>
+		<security:csrf disabled="true" />
+	</security:http>
+
+	<!--设置登陆的账号和密码两个-->
+	<security:authentication-manager>
+		<security:authentication-provider>
+			<security:user-service>
+				<security:user name="user" password="{noop}user" authorities="ROLE_USER" />
+				<security:user name="admin" password="{noop}admin" authorities="ROLE_ADMIN" />
+			</security:user-service>
+		</security:authentication-provider>
+	</security:authentication-manager>
+</beans>

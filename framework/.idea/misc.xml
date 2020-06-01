@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/03-SpringMVC" />
+    <file type="web" url="file://$PROJECT_DIR$/04-SSM" />
+    <file type="web" url="file://$PROJECT_DIR$/05-SpringSecurity" />
+  </component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/01-MyBatis/pom.xml" />
+        <option value="$PROJECT_DIR$/02-Spring/pom.xml" />
+        <option value="$PROJECT_DIR$/03-SpringMVC/pom.xml" />
+        <option value="$PROJECT_DIR$/04-SSM/pom.xml" />
+        <option value="$PROJECT_DIR$/05-SpringSecurity/pom.xml" />
+        <option value="$PROJECT_DIR$/06-SpringBoot/pom.xml" />
+        <option value="$PROJECT_DIR$/07-SpringCloud/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

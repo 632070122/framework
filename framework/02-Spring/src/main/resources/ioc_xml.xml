@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--bean的作用范围-->
+    <!--bean标签的scope属性指定作用范围,singleton单例,prototype多例,request作用web应用请求范围,session作用web应用会话范围,global-session作用环境集群会话范围-->
+
+    <!--bean对象的生命周期,单例对象-->
+    <!--容器创建时对象出生,容器还在对象就在,容器销毁对象消失-->
+
+    <!--bean对象的生命周期,多例对象-->
+    <!--使用对象时才创建,只要一直在使用对象就在,长期不用由Java垃圾回收机制回收-->
+
+    <!--创建对象的第一种方式,使用默认空参构造函数创建-->
+    <bean id="account01" class="ioc.xml.Account01"></bean>
+
+    <!--创建对象的第二种方式,获取返回值对象-->
+    <bean id="account02" class="ioc.xml.Account02"></bean>
+    <bean id="date" factory-bean="account02" factory-method="returnDate"></bean>
+
+    <!--创建对象的第三种方式,获取静态方法的返回值对象-->
+    <bean id="account03" class="ioc.xml.Account03" factory-method="returnRandom"></bean>
+
+    <!--创建对象的第四种方式,采用有参构造创建对象,注入基本类型和String-->
+    <bean id="account04" class="ioc.xml.Account04">
+        <constructor-arg name="name" value="小明"></constructor-arg>
+        <constructor-arg name="age" value="22"></constructor-arg>
+        <constructor-arg name="birthday" ref="now"></constructor-arg>
+    </bean>
+    <bean id="now" class="java.util.Date"></bean>
+
+    <!--创建对象的第五种方式,采用有参构造创建对象,注入基本类型和String-->
+    <bean id="account05" class="ioc.xml.Account05">
+        <property name="name" value="小明"/>
+        <property name="age" value="22"/>
+        <property name="birthday" ref="now"/>
+    </bean>
+
+    <!--创建对象的第六种方式,注入集合类型-->
+    <bean id="account06" class="ioc.xml.Account06">
+        <property name="myStrs">
+            <array>
+                <value>aaa</value>
+                <value>bbb</value>
+                <value>ccc</value>
+            </array>
+        </property>
+        <property name="myList">
+            <list>
+                <value>aaa</value>
+                <value>bbb</value>
+                <value>ccc</value>
+            </list>
+        </property>
+        <property name="mySet">
+            <set>
+                <value>aaa</value>
+                <value>bbb</value>
+                <value>ccc</value>
+            </set>
+        </property>
+        <property name="myMap">
+            <map>
+                <entry key="aaa" value="aaa"></entry>
+                <entry key="bbb" value="bbb"></entry>
+                <entry key="ccc" value="ccc"></entry>
+            </map>
+        </property>
+        <property name="myProps">
+            <props>
+                <prop key="abc">abc</prop>
+            </props>
+        </property>
+    </bean>
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,42 @@
+# 端口
+#server:
+#  port: 10010
+
+#spring:
+#  application:
+#    name:  gateway # 自己的服务的名字,注册提供的名字
+
+#eureka:
+#  client:
+#    register-with-eureka: true  # 是否进行注册
+#    service-url:
+#      defaultZone: http://127.0.0.1:10086/eureka,http://127.0.0.1:10087/eureka # 注册到哪里去
+
+
+#zuul:
+#  routes:
+#    user-service:
+#      path: /user/**  # 访问的路径
+#      serviceId: user-service # 跳转的路径
+#      strip-prefix: false # 局部去除前缀
+#  ignored-services:
+#    - user-consumer # 忽略要访问的列表
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
